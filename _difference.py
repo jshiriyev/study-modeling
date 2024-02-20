@@ -1,3 +1,41 @@
+"""This is going to be all about finite difference!"""
+
+from scipy.sparse import csr_matrix as csr
+from scipy.sparse import csc_matrix as csc
+from scipy.sparse import hstack
+from scipy.sparse import triu
+
+from scipy.sparse.linalg import spsolve_triangular as sps
+from scipy.sparse.linalg import splu
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# from mesh import rectangle
+
+class Poisson():
+
+    """
+    Finite Difference Solution of 2D Poisson's equation
+
+    # \\del^2 U/\\del x^2+\\del^2 U/\\del y^2 = f(x,y)
+
+    with boundary conditions:
+
+    u = 0 at left and right edges,
+    u = 10 at bottom edge,
+    and at top edge U+\\del U/\\del y = 5
+
+    """
+
+    def __init__(self,rectangle):
+
+        self.rectangle = rectangle
+
+    def solve(self):
+
+        pass
+
 class Laplace():
 
     def set_externalBC(self,b_xmin=(0,1,0),b_xmax=(0,1,0),b_ymin=(0,1,0),b_ymax=(0,1,0),b_zmin=(0,1,0),b_zmax=(0,1,0)):
