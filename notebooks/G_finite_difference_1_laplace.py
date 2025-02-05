@@ -1,4 +1,6 @@
-"""This is going to be all about finite difference!"""
+import matplotlib.pyplot as plt
+
+import numpy as np
 
 from scipy.sparse import csr_matrix as csr
 from scipy.sparse import csc_matrix as csc
@@ -8,33 +10,115 @@ from scipy.sparse import triu
 from scipy.sparse.linalg import spsolve_triangular as sps
 from scipy.sparse.linalg import splu
 
-import matplotlib.pyplot as plt
-import numpy as np
+def laplace1D(self):
+    
+    bnd1 = (1,-1,50)
+    bnd2 = (1,0,100)
 
-# from mesh import rectangle
+    grids = computational_singlephase()
 
-class Poisson():
+    grids.cartesian((7,1,1),(7,1,1))
 
-    """
-    Finite Difference Solution of 2D Poisson's equation
+    grids.initialize()
 
-    # \\del^2 U/\\del x^2+\\del^2 U/\\del y^2 = f(x,y)
+    grids.transmissibility()
 
-    with boundary conditions:
+    grids.central(order=2)
 
-    u = 0 at left and right edges,
-    u = 10 at bottom edge,
-    and at top edge U+\\del U/\\del y = 5
+    grids.implement_bc(b_xmin=bnd1,b_xmax=bnd2)
 
-    """
+    ##analytical = core_singlephase()
+    ##analytical.cartesian_poisson_1D((0,7),(bnd1,bnd2),0)
 
-    def __init__(self,rectangle):
+    grids.solve()
 
-        self.rectangle = rectangle
+def laplace2D(self):
 
-    def solve(self):
+    grids = computational_singlephase()
 
-        pass
+    num_x = 50
+    num_y = 50
+
+    grids.cartesian((20,10,10),(num_x,num_y,1))
+
+    grids.initialize()
+
+    grids.transmissibility()
+
+    grids.central(order=2)
+
+    grids.implement_bc(b_xmin=(1,0,0),
+                       b_xmax=(0,1,0),
+                       b_ymin=(1,0,0),
+                       b_ymax=(1,0,100))
+
+    grids.solve()
+
+    ##X = grids.center[:,0].reshape(num_x,num_y)
+    ##Y = grids.center[:,1].reshape(num_x,num_y)
+    ##
+    ##Z = grids.unknown.reshape(num_x,num_y)
+    ##
+    ##plt.contourf(X,Y,Z,alpha=1,cmap=cm.PuBu)
+    ##plt.colorbar()
+    ##
+    ##plt.title('Pressure Map',fontsize=14)
+    ##plt.xlabel('x-axis',fontsize=14)
+    ##plt.ylabel('y-axis',fontsize=14)
+    ##
+    ##plt.xlim([0,20])
+    ##plt.ylim([0,10])
+    ##
+    ##plt.show()
+
+def laplace3D(self):
+
+    solver = computational_singlephase()
+
+    num_x = 25
+    num_y = 25
+    num_z = 10
+
+    solver.cartesian((num_x*1.,num_y*1.,num_z*1.),(num_x,num_y,num_z))
+
+    solver.initialize()
+
+    solver.transmissibility()
+
+    solver.central()
+
+    solver.implement_bc(b_xmin=(1,0,0),
+                        b_xmax=(0,1,0),
+                        b_ymin=(1,0,0),
+                        b_ymax=(1,0,100),
+                        b_zmin=(0,1,0),
+                        b_zmax=(0,1,0))
+
+    solver.solve()
+
+    ##X = solver.center[:,0].reshape(num_x,num_y,num_z)
+    ##Y = solver.center[:,1].reshape(num_x,num_y,num_z)
+    ##Z = solver.center[:,2].reshape(num_x,num_y,num_z)
+    ##
+    ####P = solver.unknown.reshape(num_x,num_y,num_z)
+    ##
+    ##fig = plt.figure()
+    ##
+    ##ax = fig.add_subplot(111, projection='3d')
+    ##
+    ##scatter = ax.scatter(X,Y,Z,alpha=0.5,c=solver.unknown)
+    ##
+    ##fig.colorbar(scatter,shrink=0.5,aspect=5)
+    ##
+    ##ax.set_xlim3d([0,solver.length_x])
+    ##ax.set_ylim3d([0,solver.length_y])
+    ##ax.set_zlim3d([0,solver.length_z])
+    ##
+    ##ax.set_xlabel('x-axis')
+    ##ax.set_ylabel('y-axis')
+    ##ax.set_zlabel('z-axis')
+    ##
+    ##plt.show()
 
 class Laplace():
 

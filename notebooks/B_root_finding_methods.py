@@ -1,3 +1,9 @@
+import numpy as np
+
+import time
+
+from scipy import optimize
+
 class bisection():
 
     def __init__(self,func,lower,upper,tol=1e-5,args=None):
@@ -141,8 +147,6 @@ class secant():
 
 if __name__ == "__main__":
 
-    import numpy as np
-
     def f1(x):
         return x**2-4*np.sin(x)
 
@@ -162,3 +166,72 @@ if __name__ == "__main__":
     # sol3 = secant(f1,1,3,tol=1e-8)
 
     print(sol2.info)
+
+    def obj(phi,epd,Re):
+        xx = np.power(phi,-0.5)
+        return xx+2*np.log10(epd/3.7+2.51/Re*xx)
+
+    def obj_der(phi,epd,Re):
+        xx = np.power(phi,-0.5)
+        xy = np.power(phi,-1.5)
+        return xy*(-1/2-2.51/np.log(10)/Re/(epd/3.7+2.51/Re*xx))
+
+    epd = 1e-4
+
+    Re = 100000
+
+    phi0 = 8/Re
+    # phi1 = 16/Re
+
+    # tic = time.perf_counter()
+    # phiS = root.secant(obj,phi0,phi1,tol=1e-7,args=(epd,Re)).value
+    # toc = time.perf_counter()
+    # print(f"home built secant method took \t {toc - tic:0.7f} seconds")
+
+    tic = time.perf_counter()
+    mysol = root.newton(obj,obj_der,phi0,tol=1e-7,args=(epd,Re))
+    phiN = mysol.value
+    toc = time.perf_counter()
+    print(f"home built newton method took \t {toc - tic:0.7f} seconds")
+
+    # tic = time.perf_counter()
+    # phiM = optimize.newton(obj,phi0,args=(epd,Re))
+    # toc = time.perf_counter()
+    # print(f"scipy newton method took \t {toc - tic:0.7f} seconds\n")
+
+    # print("home built secant method result is \t",phiS)
+    # print("home built newton method result is \t",phiN)
+    # print("scipy newton method result is \t\t",phiM)
+    ##print(obj(0.01851386607747164,epd,Re))
+    ##print(obj(0.01851386607747165,epd,Re))
+
+    # print(mysol.info)
+
+
+
+    def objective1(x):
+        return x**3-x-2
+
+    def objective2(x):
+        return x**2-4*np.sin(x)
+
+    def objective3(x):
+        return x**2-4*x+4
+
+    sol1 = root.bisection(objective1,1,2,tol=1e-5)
+
+    print(sol1.info)
+    print(sol1.value)
+    print(sol1.minima,end="\n\n")
+
+    sol2 = root.bisection(objective2,1,3,tol=1e-7)
+
+    print(sol2.info)
+    print(sol2.value)
+    print(sol2.minima,end="\n\n")
+
+    sol3 = root.bisection(objective3,1,3,tol=1e-7)
+
+    print(sol3.info)
+    print(sol3.value)
+    print(sol3.minima)
